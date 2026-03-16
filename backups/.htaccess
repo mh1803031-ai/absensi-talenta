@@ -1,0 +1,5 @@
+# Protect backups directory — deny all direct browser access
+<FilesMatch ".*">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>

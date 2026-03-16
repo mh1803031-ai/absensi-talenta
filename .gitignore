@@ -1,0 +1,19 @@
+# Ignore uploads files but keep directories
+uploads/photos/*
+!uploads/photos/.gitkeep
+uploads/tasks/*
+!uploads/tasks/.gitkeep
+uploads/media/*
+!uploads/media/.gitkeep
+uploads/materials/*
+!uploads/materials/.gitkeep
+
+# Ignore DB setup scripts
+setup_db.php
+setup_db2.php
+alter_db.php
+desc_lp.php
+
+# Ignore dev logs
+error_log
+.DS_Store
