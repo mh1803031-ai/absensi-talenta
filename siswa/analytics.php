@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
@@ -6,7 +6,7 @@ requireRole('siswa');
 
 $pageTitle  = 'Statistik Belajar';
 $activePage = 'analytics';
-$base = '/TUGASPAKDANIL/ABSENSITALENTA';
+$base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 $studentId = currentUser()['id'];
 
 // Get quiz scores (Line Chart)

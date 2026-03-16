@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
@@ -6,7 +6,7 @@ requireLogin();
 
 $pageTitle  = 'Profil Saya';
 $activePage = 'profile';
-$base = '/TUGASPAKDANIL/ABSENSITALENTA';
+$base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 
 $pdo = db();
 $user_id = currentUser()['id'];

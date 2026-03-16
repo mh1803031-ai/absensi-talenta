@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
@@ -6,7 +6,7 @@ requireRole('admin');
 
 $pageTitle = 'Kelola Jadwal Pelajaran';
 $activePage = 'schedules';
-$base = '/TUGASPAKDANIL/ABSENSITALENTA';
+$base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 $pdo = db();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

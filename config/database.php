@@ -1,8 +1,6 @@
 <?php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'talenta_db');
+// Load central app config (auto-detects localhost vs production)
+require_once __DIR__ . '/app.php';
 
 $pdo = null;
 

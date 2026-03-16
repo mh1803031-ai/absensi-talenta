@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Shared head + topbar for all dashboard pages
 // Usage: include with $pageTitle and $activePage set
 if (session_status() === PHP_SESSION_NONE) session_start();
@@ -6,7 +6,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes
 require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
 $user = currentUser();
 $role = currentRole();
-$base = '/TUGASPAKDANIL/ABSENSITALENTA';
+$base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 $initials = avatarInitials($user['name'] ?? 'U');
 
 $unreadNotifs = 0;

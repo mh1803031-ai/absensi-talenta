@@ -1,7 +1,7 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/includes/auth.php';
 if (isLoggedIn()) { redirectByRole(); }
-$base = '/TUGASPAKDANIL/ABSENSITALENTA';
+$base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 ?>
 <!DOCTYPE html>
 <html lang="id">
