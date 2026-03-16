@@ -10,7 +10,6 @@ if (!$quizId) {
     exit;
 }
 
-// Get Quiz details
 $stmt = db()->prepare("SELECT q.*, c.name AS class_name FROM quizzes q LEFT JOIN classes c ON c.id = q.class_id WHERE q.id = ?");
 $stmt->execute([$quizId]);
 $quiz = $stmt->fetch();
@@ -22,14 +21,12 @@ if (!$quiz) {
 $pageTitle = 'Hasil Ulangan: ' . clean($quiz['title']);
 $activePage = 'quizzes';
 
-// Get Questions mapping ID => expected correctly
 $stmt = db()->prepare("SELECT * FROM quiz_questions WHERE quiz_id = ? ORDER BY id");
 $stmt->execute([$quizId]);
 $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $totalQuestions = count($questions);
 
-// Fetch answers & results
 $stmt = db()->prepare("
     SELECT qa.*, u.name AS student_name, u.username
     FROM quiz_answers qa
@@ -190,7 +187,6 @@ include __DIR__ . '/../includes/header.php';
 </div>
 
 <script>
-// Pass initial questions data to Javascript
 const quizQuestions = <?= json_encode($questions) ?>;
 
 function showDetailModal(studentName, studentAnswers) {
@@ -212,7 +208,6 @@ function showDetailModal(studentName, studentAnswers) {
         const correct = q.correct_answer;
         const isCorrect = (userAnswer === correct);
 
-        // Styling based on correctness
         const borderColor = isCorrect ? 'var(--success)' : 'var(--danger)';
         const bgColor = isCorrect ? 'rgba(42, 157, 143, 0.05)' : 'rgba(230, 57, 70, 0.05)';
         const iconHtml = isCorrect ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>';

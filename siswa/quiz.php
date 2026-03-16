@@ -9,12 +9,10 @@ $base      = '/TUGASPAKDANIL/ABSENSITALENTA';
 $studentId = currentUser()['id'];
 $classId   = currentUser()['class_id'];
 
-// Handle quiz submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['quiz_id'])) {
     $quizId  = (int)$_POST['quiz_id'];
     $answers = $_POST['answers'] ?? [];
 
-    // Get questions with correct answers
     $qStmt = db()->prepare("SELECT id, correct_answer FROM quiz_questions WHERE quiz_id = ?");
     $qStmt->execute([$quizId]);
     $questions = $qStmt->fetchAll();
@@ -34,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['quiz_id'])) {
          ON DUPLICATE KEY UPDATE answers=VALUES(answers), score=VALUES(score), submitted_at=NOW()"
     )->execute([$quizId, $studentId, json_encode($answers), $score]);
 
-    // Mark quiz_access as used
     db()->prepare("UPDATE quiz_access SET is_used=1 WHERE quiz_id=? AND student_id=?")
        ->execute([$quizId, $studentId]);
 
@@ -42,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['quiz_id'])) {
     header("Location: $base/siswa/quiz.php"); exit;
 }
 
-// View specific quiz
 $viewQuizId = (int)($_GET['quiz_id'] ?? 0);
 $quizData   = null;
 $questions  = [];
@@ -57,7 +53,6 @@ if ($viewQuizId) {
     }
 }
 
-// List available quizzes
 $availableQuizzes = db()->query(
     "SELECT q.*, (SELECT score FROM quiz_answers WHERE quiz_id=q.id AND student_id=$studentId) AS my_score,
             (SELECT id FROM quiz_access WHERE quiz_id=q.id AND student_id=$studentId AND is_used=0) AS has_grant
@@ -118,7 +113,6 @@ include __DIR__ . '/../includes/header.php';
 </div>
 
 <script>
-// Countdown timer
 const endTime = new Date('<?= $quizData['end_time'] ?>').getTime();
 function updateCountdown(){
   const rem = endTime - Date.now();

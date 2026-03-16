@@ -18,14 +18,12 @@ $recentJournals = db()->query(
      ORDER BY j.submitted_at DESC LIMIT 5"
 )->fetchAll();
 
-// Recent announcements
 $recentAnnouncements = db()->query(
     "SELECT a.*, u.name as author_name FROM announcements a 
      JOIN users u ON a.author_id = u.id 
      ORDER BY a.created_at DESC LIMIT 3"
 )->fetchAll();
 
-// Today's schedule for teacher
 $currentDow = date('N');
 $teacherId = currentUser()['id'];
 $todaySchedule = db()->query("
@@ -36,7 +34,6 @@ $todaySchedule = db()->query("
     ORDER BY s.start_time ASC
 ")->fetchAll();
 
-// Today Attendance Recap per Class
 $todayAttendance = db()->query(
     "SELECT c.name as class_name, 
             COUNT(DISTINCT u.id) as total_siswa,

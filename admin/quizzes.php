@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['end_time']
         ]);
         $qid = db()->lastInsertId();
-        // Add questions
         $questions = $_POST['questions'] ?? [];
         foreach ($questions as $q) {
             if (empty($q['question'])) continue;
@@ -54,9 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'grant_access') {
         $qid = (int)$_POST['quiz_id'];
         $sid = (int)$_POST['student_id'];
-        // Remove old answer so they can retake
         db()->prepare("DELETE FROM quiz_answers WHERE quiz_id=? AND student_id=?")->execute([$qid,$sid]);
-        // Grant access record
         $stmt = db()->prepare("SELECT id FROM quiz_access WHERE quiz_id=? AND student_id=?");
         $stmt->execute([$qid,$sid]);
         if (!$stmt->fetch()) {
@@ -247,7 +244,6 @@ function openGrantModal(qid){
   document.getElementById('grantQuizId').value = qid;
   openModal('modalGrant');
 }
-// Add first question by default
 addQuestion();
 </script>
 

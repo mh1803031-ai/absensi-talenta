@@ -22,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title   = clean($_POST['title']);
     $content = clean($_POST['content']);
 
-    // ── Tugas file (doc/pdf/zip) ─────────────────────────────
     $taskSubmitted = 0;
     $taskFilename  = null;
     if (!empty($_FILES['task_file']['name'])) {
@@ -40,14 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ── Insert journal ────────────────────────────────────────
     db()->prepare(
         "INSERT INTO journals (student_id, attendance_id, title, content, task_file, task_submitted)
          VALUES (?,?,?,?,?,?)"
     )->execute([$studentId, $attendanceId, $title, $content, $taskFilename, $taskSubmitted]);
     $journalId = db()->lastInsertId();
 
-    // ── Notifikasi ke Admin & Guru ────────────────────────────────────────
     try {
         $studentName = currentUser()['name'];
         $notifMsg = "$studentName mengirimkan jurnal harian baru.";
@@ -68,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } catch (Exception $e) {}
 
-    // ── Media files (foto & video) ────────────────────────────
     $mediaDir = __DIR__ . '/../uploads/media/';
     if (!is_dir($mediaDir)) mkdir($mediaDir, 0755, true);
 
@@ -76,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $allowedVideos = ['mp4','mov','avi','mkv','webm','3gp'];
     $maxMediaSize  = 100 * 1024 * 1024; // 100MB
 
-    // Multiple photos
     if (!empty($_FILES['photos']['name'][0])) {
         $files = $_FILES['photos'];
         for ($i = 0; $i < count($files['name']); $i++) {
@@ -93,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Multiple videos
     if (!empty($_FILES['videos']['name'][0])) {
         $files = $_FILES['videos'];
         for ($i = 0; $i < count($files['name']); $i++) {
@@ -303,12 +297,10 @@ include __DIR__ . '/../includes/header.php';
 </div>
 
 <script>
-// ── Char counter ─────────────────────────────────────────────
 const content = document.getElementById('content');
 const cc      = document.getElementById('charCount');
 content.addEventListener('input', () => { cc.textContent = content.value.length + ' karakter'; });
 
-// ── Drag & Drop highlight ─────────────────────────────────────
 ['photoZone','videoZone'].forEach(id => {
   const zone = document.getElementById(id);
   zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
@@ -316,7 +308,6 @@ content.addEventListener('input', () => { cc.textContent = content.value.length 
   zone.addEventListener('drop', () => zone.classList.remove('drag-over'));
 });
 
-// ── Preview builder ───────────────────────────────────────────
 function buildPreviews(input, previewGrid, countBadge, type, max) {
   input.addEventListener('change', function() {
     const files = Array.from(this.files);
@@ -355,7 +346,6 @@ function buildPreviews(input, previewGrid, countBadge, type, max) {
       label.textContent = file.name;
       item.appendChild(label);
 
-      // Size badge
       const size = document.createElement('div');
       size.style.cssText = 'position:absolute;top:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:.65rem;padding:.15rem .35rem;border-radius:4px';
       size.textContent = (file.size/1024/1024).toFixed(1) + 'MB';
@@ -379,12 +369,10 @@ buildPreviews(
   'video', 3
 );
 
-// ── Submit guard ──────────────────────────────────────────────
 document.getElementById('journalForm').addEventListener('submit', function(e) {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupload...';
-  // Re-enable after 30s fallback
   setTimeout(() => {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Jurnal';

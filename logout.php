@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/functions.php';
@@ -19,4 +19,3 @@ if (isLoggedIn() && currentRole() === 'siswa') {
 session_destroy();
 header("Location: $base/login.php?msg=logout");
 exit;
-

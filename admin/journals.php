@@ -53,7 +53,6 @@ if ($filterStatus) { $sqlBase .= " AND j.status = ?"; $params[] = $filterStatus;
 if ($filterClass)  { $sqlBase .= " AND u.class_id = ?"; $params[] = $filterClass; }
 if ($search)       { $sqlBase .= " AND (u.name LIKE ? OR j.title LIKE ?)"; $params[] = "%$search%"; $params[] = "%$search%"; }
 
-// Total count for pagination
 $totalStmt = db()->prepare("SELECT COUNT(*) " . $sqlBase);
 $totalStmt->execute($params);
 $totalCount = (int)$totalStmt->fetchColumn();
@@ -270,7 +269,6 @@ function openReviewModal(j){
   document.getElementById('reviewStatus').value = j.status !== 'pending' ? j.status : 'reviewed';
   document.getElementById('reviewNote').value = j.review_note || '';
 
-  // Task file
   const tf = document.getElementById('reviewTaskFile');
   const tl = document.getElementById('reviewTaskLink');
   if (j.task_file) {
@@ -278,7 +276,6 @@ function openReviewModal(j){
     tf.style.display = 'block';
   } else { tf.style.display = 'none'; }
 
-  // Load media via AJAX
   const mediaSection = document.getElementById('reviewMediaSection');
   const mediaGrid    = document.getElementById('reviewMediaGrid');
   mediaSection.style.display = 'none';

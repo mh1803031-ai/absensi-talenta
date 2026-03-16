@@ -11,7 +11,6 @@ $studentId = currentUser()['id'];
 $journalId = (int)($_GET['id'] ?? 0);
 if (!$journalId) { header("Location: $base/siswa/journal_history.php"); exit; }
 
-// Verify journal belongs to student AND is in revision status
 $stmt = db()->prepare("SELECT * FROM journals WHERE id = ? AND student_id = ?");
 $stmt->execute([$journalId, $studentId]);
 $journal = $stmt->fetch();
@@ -25,7 +24,6 @@ if ($journal['status'] !== 'revision') {
     header("Location: $base/siswa/journal_history.php"); exit;
 }
 
-// Fetch existing media
 $mediaStmt = db()->prepare("SELECT * FROM journal_media WHERE journal_id = ?");
 $mediaStmt->execute([$journalId]);
 $existingMedia = $mediaStmt->fetchAll();
@@ -36,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title   = clean($_POST['title']);
     $content = clean($_POST['content']);
 
-    // ── Update Tugas file (jika di-upload ulang) ───────────
     $taskFilename  = $journal['task_file']; // default keep existing
     $taskSubmitted = $journal['task_submitted'];
     
@@ -55,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ── Remove old media if requested ────────────────────────
     $removeMedia = $_POST['remove_media'] ?? [];
     if (!empty($removeMedia)) {
         foreach ($removeMedia as $mId) {
@@ -70,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ── Add new Media files (foto & video) ────────────────────
     $mediaDir = __DIR__ . '/../uploads/media/';
     if (!is_dir($mediaDir)) mkdir($mediaDir, 0755, true);
 
@@ -78,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $allowedVideos = ['mp4','mov','avi','mkv','webm','3gp'];
     $maxMediaSize  = 100 * 1024 * 1024; // 100MB
 
-    // Multiple photos
     if (!empty($_FILES['photos']['name'][0])) {
         $files = $_FILES['photos'];
         for ($i = 0; $i < count($files['name']); $i++) {
@@ -95,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Multiple videos
     if (!empty($_FILES['videos']['name'][0])) {
         $files = $_FILES['videos'];
         for ($i = 0; $i < count($files['name']); $i++) {
@@ -112,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // ── Update journal & reset status to pending ──────────────
     db()->prepare(
         "UPDATE journals SET title=?, content=?, task_file=?, task_submitted=?, status='pending', submitted_at=NOW() WHERE id=?"
     )->execute([$title, $content, $taskFilename, $taskSubmitted, $journalId]);
@@ -357,23 +349,19 @@ include __DIR__ . '/../includes/header.php';
 </div>
 
 <script>
-// ── Char counter ─────────────────────────────────────────────
 const content = document.getElementById('content');
 const cc      = document.getElementById('charCount');
 content.addEventListener('input', () => { cc.textContent = content.value.length + ' karakter'; });
 
-// ── Existing Media Delete Toggle ──────────────────────────────
 function toggleRemoveMedia(id) {
     const el = document.getElementById('media-' + id);
     const container = document.getElementById('removedMediaContainer');
     let input = document.getElementById('remove-input-' + id);
 
     if (el.classList.contains('marked-delete')) {
-        // Undelete
         el.classList.remove('marked-delete');
         if (input) input.remove();
     } else {
-        // Mark as delete
         el.classList.add('marked-delete');
         if (!input) {
             input = document.createElement('input');
@@ -386,7 +374,6 @@ function toggleRemoveMedia(id) {
     }
 }
 
-// ── Drag & Drop highlight ─────────────────────────────────────
 ['photoZone','videoZone'].forEach(id => {
   const zone = document.getElementById(id);
   zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
@@ -394,7 +381,6 @@ function toggleRemoveMedia(id) {
   zone.addEventListener('drop', () => zone.classList.remove('drag-over'));
 });
 
-// ── Preview builder ───────────────────────────────────────────
 function buildPreviews(input, previewGrid, countBadge, type, max) {
   input.addEventListener('change', function() {
     const files = Array.from(this.files);
@@ -426,7 +412,6 @@ function buildPreviews(input, previewGrid, countBadge, type, max) {
       label.textContent = file.name;
       item.appendChild(label);
 
-      // Size badge
       const size = document.createElement('div');
       size.style.cssText = 'position:absolute;top:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:.65rem;padding:.15rem .35rem;border-radius:4px';
       size.textContent = (file.size/1024/1024).toFixed(1) + 'MB';
@@ -450,12 +435,10 @@ buildPreviews(
   'video', 3
 );
 
-// ── Submit guard ──────────────────────────────────────────────
 document.getElementById('journalForm').addEventListener('submit', function(e) {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim Revisi...';
-  // Re-enable after 30s fallback
   setTimeout(() => {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Revisi';

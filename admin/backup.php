@@ -8,7 +8,6 @@ $pageTitle  = 'Backup Database';
 $activePage = 'backup';
 $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 
-// Only accessible from localhost for security
 if (!in_array($_SERVER['REMOTE_ADDR'], ['127.0.0.1', '::1'])) {
     die('<div style="text-align:center;padding:4rem;font-family:sans-serif;"><h2>⛔ Akses Ditolak</h2><p>Halaman ini hanya bisa diakses dari komputer server.</p></div>');
 }
@@ -17,7 +16,6 @@ $message = '';
 $msgType = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'backup') {
-    // Use already-defined constants from config/database.php (loaded via require_once at top)
     $dbhost = DB_HOST;
     $dbname = DB_NAME;
     $dbuser = DB_USER;
@@ -29,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'backu
     $filename  = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
     $filepath  = $backupDir . $filename;
 
-    // Try mysqldump first
     $passArg = $dbpass ? '--password=' . escapeshellarg($dbpass) : '--password=';
     $cmd = sprintf(
         'mysqldump --host=%s --user=%s %s %s > %s 2>&1',
@@ -45,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'backu
         $message = "✅ Backup berhasil dibuat: <strong>$filename</strong> (" . number_format(filesize($filepath) / 1024, 1) . " KB)";
         $msgType = 'success';
     } else {
-        // Fallback: PHP-based dump using the already-connected db()
         try {
             $pdo = db();
             $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
@@ -98,7 +94,6 @@ if (isset($_GET['delete_backup'])) {
     header("Location: $base/admin/backup.php"); exit;
 }
 
-// List existing backups
 $backupDir = __DIR__ . '/../backups/';
 $backupFiles = [];
 if (is_dir($backupDir)) {

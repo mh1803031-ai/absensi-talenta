@@ -15,14 +15,12 @@ $pendingJurnals   = countTable('journals', 'status = ?', ['pending']);
 $totalKelas       = countTable('classes');
 $totalUlangan     = countTable('quizzes', 'is_active = 1');
 
-// Recent journals
 $recentJournals = db()->query(
     "SELECT j.*, u.name AS student_name, u.username
      FROM journals j JOIN users u ON u.id = j.student_id
      ORDER BY j.submitted_at DESC LIMIT 5"
 )->fetchAll();
 
-// Today tokens
 $todayTokens = db()->query(
     "SELECT t.*, u.name AS gen_name, c.name AS class_name
      FROM attendance_tokens t
@@ -32,14 +30,12 @@ $todayTokens = db()->query(
      ORDER BY t.created_at DESC LIMIT 5"
 )->fetchAll();
 
-// Recent announcements
 $recentAnnouncements = db()->query(
     "SELECT a.*, u.name as author_name FROM announcements a 
      JOIN users u ON a.author_id = u.id 
      ORDER BY a.created_at DESC LIMIT 3"
 )->fetchAll();
 
-// Today Attendance Recap per Class
 $todayAttendance = db()->query(
     "SELECT c.name as class_name, 
             COUNT(DISTINCT u.id) as total_siswa,

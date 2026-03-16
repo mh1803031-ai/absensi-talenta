@@ -12,7 +12,6 @@ $attended   = hasAttendedToday($studentId);
 $submitted  = $attended && hasSubmittedJournalToday($studentId);
 $attendanceId = $attended ? getTodayAttendanceId($studentId) : null;
 
-// Recent journals
 $myJournals = db()->query(
     "SELECT j.*, t.token FROM journals j
      JOIN attendance_records r ON r.id = j.attendance_id
@@ -21,7 +20,6 @@ $myJournals = db()->query(
      ORDER BY j.submitted_at DESC LIMIT 5"
 )->fetchAll();
 
-// Active quizzes for student
 $myClassId = $user['class_id'];
 $quizQry = "SELECT q.* FROM quizzes q
             WHERE q.is_active = 1 AND NOW() BETWEEN q.start_time AND q.end_time
@@ -32,14 +30,12 @@ $quizStmt = db()->prepare($quizQry);
 $quizStmt->execute([$myClassId, $studentId]);
 $activeQuizzes = $quizStmt->fetchAll();
 
-// Recent announcements
 $recentAnnouncements = db()->query(
     "SELECT a.*, u.name as author_name FROM announcements a 
      JOIN users u ON a.author_id = u.id 
      ORDER BY a.created_at DESC LIMIT 3"
 )->fetchAll();
 
-// Today's schedule
 $currentDow = date('N');
 $todaySchedule = [];
 if ($myClassId) {
@@ -253,10 +249,8 @@ $activePage = 'dashboard';
 </div>
 
 <script>
-// Token modal — prevent all close options
 const tokenModal = document.getElementById('tokenModal');
 if (tokenModal) {
-  // Prevent clicks outside from closing
   tokenModal.addEventListener('click', function(e) {
     if (e.target === tokenModal) {
       const box = tokenModal.querySelector('.modal-box');
@@ -265,20 +259,16 @@ if (tokenModal) {
       box.classList.add('shake');
     }
   });
-  // Prevent ESC
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') e.preventDefault();
   });
-  // Focus input on load
   setTimeout(() => document.getElementById('tokenInput')?.focus(), 300);
 }
 
-// Auto uppercase token input
 document.getElementById('tokenInput')?.addEventListener('input', function(){
   this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
 });
 
-// Submit token via AJAX
 function submitToken(){
   const token  = document.getElementById('tokenInput').value.trim();
   const status = document.getElementById('tokenStatus');

@@ -1,9 +1,8 @@
-<?php
+﻿<?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Load central app config for APP_BASE_PATH
 $_appConfigPath = __DIR__ . '/../config/app.php';
 if (file_exists($_appConfigPath) && !defined('APP_BASE_PATH')) {
     require_once $_appConfigPath;
@@ -55,4 +54,3 @@ function redirectByRole(): void {
     }
     exit;
 }
-

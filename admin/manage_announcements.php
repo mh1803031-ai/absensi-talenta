@@ -4,7 +4,6 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-// Allow both admin and guru
 if (!in_array(currentRole(), ['admin', 'guru'])) {
     header('Location: /TUGASPAKDANIL/ABSENSITALENTA/login.php');
     exit;
@@ -38,7 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all announcements
 $stmt = db()->query("
     SELECT a.*, u.name as author_name 
     FROM announcements a 

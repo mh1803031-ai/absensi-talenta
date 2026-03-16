@@ -11,7 +11,6 @@ $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENT
 $filterMonth = $_GET['month'] ?? date('Y-m');
 $filterClass = $_GET['class_id'] ?? '';
 
-// Attendance by class this month
 $classStats = db()->query(
     "SELECT c.name AS class_name,
             COUNT(DISTINCT r.student_id) AS total_hadir,
@@ -22,7 +21,6 @@ $classStats = db()->query(
      GROUP BY c.id ORDER BY c.name"
 )->fetchAll();
 
-// Top absent students
 $absentees = db()->query(
     "SELECT u.name, u.username, c.name AS class_name,
             COUNT(r.id) AS hadir_count
@@ -33,7 +31,6 @@ $absentees = db()->query(
      GROUP BY u.id ORDER BY hadir_count ASC LIMIT 10"
 )->fetchAll();
 
-// Journal stats
 $journalStats = db()->query(
     "SELECT status, COUNT(*) as cnt FROM journals
      WHERE DATE_FORMAT(submitted_at,'%Y-%m') = '$filterMonth'
@@ -42,7 +39,6 @@ $journalStats = db()->query(
 $jMap = [];
 foreach ($journalStats as $js) $jMap[$js['status']] = $js['cnt'];
 
-// Quiz scores
 $quizScores = db()->query(
     "SELECT q.title, AVG(a.score) AS avg_score, MAX(a.score) AS max_score, MIN(a.score) AS min_score, COUNT(a.id) AS participants
      FROM quiz_answers a JOIN quizzes q ON q.id = a.quiz_id
@@ -50,9 +46,7 @@ $quizScores = db()->query(
      GROUP BY q.id ORDER BY q.created_at DESC LIMIT 10"
 )->fetchAll();
 
-// ── CSV Export Handler ───────────────────────────────────────
 if (isset($_GET['export']) && $_GET['export'] === 'csv') {
-    // Build a full attendance export for the month
     $exportMonth = $filterMonth;
     $exportData = db()->query(
         "SELECT u.name AS nama_siswa, u.username, c.name AS kelas,
@@ -69,7 +63,6 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     header('Content-Type: text/csv; charset=UTF-8');
     header('Content-Disposition: attachment; filename="laporan_kehadiran_' . $exportMonth . '.csv"');
     header('Pragma: no-cache');
-    // BOM for Excel compatibility
     echo "\xEF\xBB\xBF";
     $out = fopen('php://output', 'w');
     fputcsv($out, ['Nama Siswa','Username','Kelas','Total Hadir (hari)','Terakhir Hadir'], ';');

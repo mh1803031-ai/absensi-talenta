@@ -27,7 +27,6 @@ $stmt = db()->prepare(
 $stmt->execute([$studentId]);
 $journals = $stmt->fetchAll();
 
-// Load media for each journal
 $journalIds = array_column($journals, 'id');
 $mediaMap   = [];
 if ($journalIds) {
@@ -272,7 +271,6 @@ function deleteJournal(id) {
     }
 }
 
-// Photo lightbox
 let currentPhotos = [];
 let currentIdx    = 0;
 
@@ -308,7 +306,6 @@ function lbKeyHandler(e) {
   if (e.key === 'Escape')     closeLightbox();
 }
 
-// Video lightbox
 function openVideoLightbox(src, name) {
   const v = document.getElementById('lightboxVideo');
   v.src = src;

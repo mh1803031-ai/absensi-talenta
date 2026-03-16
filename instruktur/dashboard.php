@@ -18,7 +18,6 @@ $recentJournals = db()->query(
      ORDER BY j.submitted_at DESC LIMIT 5"
 )->fetchAll();
 
-// Recent announcements
 $recentAnnouncements = db()->query(
     "SELECT a.*, u.name as author_name FROM announcements a 
      JOIN users u ON a.author_id = u.id 

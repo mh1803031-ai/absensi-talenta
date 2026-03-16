@@ -27,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
                     if ($stmt->execute([$newHash, $user_id])) {
                         setFlash('success', 'Password berhasil diubah!');
-                        // Refresh data
                         $currentUserData = $pdo->query("SELECT u.*, c.name as class_name FROM users u LEFT JOIN classes c ON c.id = u.class_id WHERE u.id = $user_id")->fetch();
                     } else {
                         setFlash('danger', 'Gagal menyimpan password baru.');

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $isLocalhost = in_array($host, ['localhost', '127.0.0.1', '::1'])
                || str_ends_with($host, '.local')

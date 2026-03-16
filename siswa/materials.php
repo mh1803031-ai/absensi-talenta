@@ -6,7 +6,6 @@ require_once __DIR__ . '/../includes/functions.php';
 
 requireRole('siswa');
 
-// Fetch all materials
 $stmt = db()->query("
     SELECT m.*, u.name as author_name 
     FROM materials m 

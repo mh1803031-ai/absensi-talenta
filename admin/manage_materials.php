@@ -4,7 +4,6 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-// Allow admin, guru, instruktur
 if (!in_array(currentRole(), ['admin', 'guru', 'instruktur'])) {
     header('Location: /TUGASPAKDANIL/ABSENSITALENTA/login.php');
     exit;
@@ -13,7 +12,6 @@ if (!in_array(currentRole(), ['admin', 'guru', 'instruktur'])) {
 $error = '';
 $success = getFlash('success');
 
-// Handle directory creation
 $uploadDir = __DIR__ . '/../uploads/materials/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
@@ -32,9 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$title) {
             $error = "Judul materi wajib diisi.";
         } else {
-            // Check file upload
             if (isset($_FILES['material_file']) && $_FILES['material_file']['error'] === UPLOAD_ERR_OK) {
-                // Max 50MB
                 if ($_FILES['material_file']['size'] > 50 * 1024 * 1024) {
                     $error = "Ukuran file maksimal 50MB.";
                 } else {
@@ -68,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'delete') {
         $id = (int)$_POST['id'];
         
-        // Find existing file to delete it locally
         $stmt = db()->prepare("SELECT file_name FROM materials WHERE id = ?");
         $stmt->execute([$id]);
         $mat = $stmt->fetch();
@@ -85,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all materials
 $stmt = db()->query("
     SELECT m.*, u.name as author_name 
     FROM materials m 

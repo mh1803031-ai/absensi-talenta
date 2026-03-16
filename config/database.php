@@ -1,5 +1,4 @@
-<?php
-// Load central app config (auto-detects localhost vs production)
+﻿<?php
 require_once __DIR__ . '/app.php';
 
 $pdo = null;

@@ -8,9 +8,7 @@ requireRole('siswa','admin','guru','instruktur');
 $base   = '/TUGASPAKDANIL/ABSENSITALENTA';
 $myRole = currentRole();
 
-// If staff viewing a student profile
 $viewId = (int)($_GET['id'] ?? currentUser()['id']);
-// Students can only view their own
 if ($myRole === 'siswa') $viewId = currentUser()['id'];
 
 $stmt = db()->prepare("SELECT u.*, c.name AS class_name FROM users u LEFT JOIN classes c ON c.id = u.class_id WHERE u.id = ?");
@@ -18,7 +16,6 @@ $stmt->execute([$viewId]);
 $profile = $stmt->fetch();
 if (!$profile) { header("Location: $base/login.php"); exit; }
 
-// Stats
 $totalHadir   = countTable('attendance_records','student_id=?',[$viewId]);
 $totalJurnals = countTable('journals','student_id=?',[$viewId]);
 $approvedJ    = countTable('journals','student_id=? AND status=?',[$viewId,'approved']);
@@ -26,7 +23,6 @@ $avgScoreStmt = db()->prepare("SELECT AVG(score) FROM quiz_answers WHERE student
 $avgScoreStmt->execute([$viewId]);
 $avgScore   = $avgScoreStmt->fetchColumn();
 
-// Journals
 $journals = db()->query(
     "SELECT j.*, u.name AS reviewer_name FROM journals j
      LEFT JOIN users u ON u.id = j.reviewed_by
@@ -34,7 +30,6 @@ $journals = db()->query(
      ORDER BY j.submitted_at DESC LIMIT 10"
 )->fetchAll();
 
-// Attendance this month
 $attendance = db()->query(
     "SELECT r.attended_at, r.status, t.valid_date FROM attendance_records r
      JOIN attendance_tokens t ON t.id = r.token_id
@@ -42,7 +37,6 @@ $attendance = db()->query(
      ORDER BY r.attended_at DESC LIMIT 30"
 )->fetchAll();
 
-// Quiz scores
 $quizScores = db()->query(
     "SELECT a.score, a.submitted_at, q.title, q.type FROM quiz_answers a
      JOIN quizzes q ON q.id = a.quiz_id

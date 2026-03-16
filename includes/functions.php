@@ -1,7 +1,6 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../config/database.php';
 
-// ─── Token ──────────────────────────────────────────────
 function generateToken(int $length = 6): string {
     $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     $token = '';
@@ -34,7 +33,6 @@ function validateToken(string $token, int $studentId): array {
 
     if (!$tokenRow) return ['success' => false, 'message' => 'Token tidak valid atau sudah kedaluwarsa.'];
 
-    // Check student class match (if token has class)
     if ($tokenRow['class_id']) {
         $userStmt = db()->prepare("SELECT class_id FROM users WHERE id = ?");
         $userStmt->execute([$studentId]);
@@ -44,7 +42,6 @@ function validateToken(string $token, int $studentId): array {
         }
     }
 
-    // Check already attended today
     $existStmt = db()->prepare(
         "SELECT id FROM attendance_records WHERE student_id = ? AND token_id = ?"
     );
@@ -53,7 +50,6 @@ function validateToken(string $token, int $studentId): array {
         return ['success' => false, 'message' => 'Anda sudah absen menggunakan token ini.'];
     }
 
-    // Record attendance
     $insStmt = db()->prepare(
         "INSERT INTO attendance_records (student_id, token_id, status) VALUES (?, ?, 'hadir')"
     );
@@ -97,7 +93,6 @@ function hasSubmittedJournalToday(int $studentId): bool {
     return (bool)$stmt->fetch();
 }
 
-// ─── Password ────────────────────────────────────────────
 function hashPassword(string $password): string {
     return password_hash($password, PASSWORD_BCRYPT);
 }
@@ -106,12 +101,10 @@ function verifyPassword(string $password, string $hash): bool {
     return password_verify($password, $hash);
 }
 
-// ─── Sanitize ────────────────────────────────────────────
 function clean(string $str): string {
     return htmlspecialchars(trim($str), ENT_QUOTES, 'UTF-8');
 }
 
-// ─── Flash messages ──────────────────────────────────────
 function setFlash(string $type, string $message): void {
     $_SESSION['flash'] = ['type' => $type, 'message' => $message];
 }
@@ -125,7 +118,6 @@ function getFlash(): ?array {
     return null;
 }
 
-// ─── Stats ───────────────────────────────────────────────
 function countTable(string $table, string $where = '', array $params = []): int {
     $sql  = "SELECT COUNT(*) FROM $table" . ($where ? " WHERE $where" : '');
     $stmt = db()->prepare($sql);

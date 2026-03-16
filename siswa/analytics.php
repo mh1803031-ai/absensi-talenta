@@ -9,7 +9,6 @@ $activePage = 'analytics';
 $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 $studentId = currentUser()['id'];
 
-// Get quiz scores (Line Chart)
 $quizScores = db()->query("
     SELECT q.title, qa.score, qa.submitted_at 
     FROM quiz_answers qa
@@ -25,7 +24,6 @@ foreach ($quizScores as $q) {
     $quizData[] = (float)$q['score'];
 }
 
-// Get attendance stats (Doughnut Chart)
 $currMonth = date('Y-m');
 $totalPresent = db()->query("
     SELECT COUNT(*) FROM attendance_records
@@ -38,7 +36,6 @@ $totalLeave = db()->query("
     WHERE lp.student_id = $studentId AND DATE_FORMAT(ar.attended_at, '%Y-%m') = '$currMonth'
 ")->fetchColumn();
 
-// Average score
 $avgScore = count($quizData) > 0 ? array_sum($quizData) / count($quizData) : 0;
 
 include __DIR__ . '/../includes/header.php';
@@ -97,12 +94,10 @@ include __DIR__ . '/../includes/header.php';
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Quiz Line Chart
     const ctxQuiz = document.getElementById('quizChart').getContext('2d');
     const quizLabels = <?= json_encode($quizLabels) ?>;
     const quizData = <?= json_encode($quizData) ?>;
     
-    // Gradient styling for Chart.js
     let gradient = ctxQuiz.createLinearGradient(0, 0, 0, 400);
     gradient.addColorStop(0, 'rgba(67, 97, 238, 0.5)'); // primary
     gradient.addColorStop(1, 'rgba(67, 97, 238, 0.0)');
@@ -141,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('quizChart').parentNode.innerHTML = '<div class="empty-state">Belum ada data nilai ulangan.</div>';
     }
 
-    // 2. Attendance Doughnut Chart
     const ctxAtt = document.getElementById('attendanceChart').getContext('2d');
     const present = <?= $totalPresent ?>;
     const leave = <?= $totalLeave ?>;

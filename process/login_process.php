@@ -33,7 +33,6 @@ if (!$user['is_active']) {
     exit;
 }
 
-// Create session
 $_SESSION['user_id']  = $user['id'];
 $_SESSION['role']     = $user['role'];
 $_SESSION['user']     = [

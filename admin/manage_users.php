@@ -8,7 +8,6 @@ $pageTitle  = 'Kelola Pengguna';
 $activePage = 'users';
 $base = defined('APP_BASE_PATH') ? APP_BASE_PATH : '/TUGASPAKDANIL/ABSENSITALENTA';
 
-// Handle POST actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -19,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $role     = $_POST['role'];
         $classId  = $_POST['class_id'] ?: null;
 
-        // Admin can create all; guru cannot create admin/guru
         if (isGuru() && in_array($role, ['admin','guru'])) {
             setFlash('danger', 'Anda tidak memiliki izin untuk membuat akun Admin atau Guru.');
         } else {
@@ -43,21 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'delete') {
         $uid = (int)$_POST['user_id'];
-        // Don't delete self
         if ($uid == currentUser()['id']) {
             setFlash('danger', 'Tidak dapat menghapus akun sendiri!');
         } else {
             try {
-                // Begin transaction to safely remove dependencies
                 db()->beginTransaction();
                 
-                // 1. Delete quiz answers & access
                 db()->prepare("DELETE FROM quiz_answers WHERE student_id = ?")->execute([$uid]);
                 db()->prepare("DELETE FROM quiz_access WHERE student_id = ? OR granted_by = ?")->execute([$uid, $uid]);
                 
-                // 2. Clear journal dependencies
-                // Note: user as reviewer is handled by ON DELETE SET NULL, but we must delete their own journals.
-                // We should also delete media for their journals first.
                 $journals = db()->prepare("SELECT id FROM journals WHERE student_id = ?");
                 $journals->execute([$uid]);
                 while ($j = $journals->fetch()) {
@@ -65,25 +57,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 db()->prepare("DELETE FROM journals WHERE student_id = ?")->execute([$uid]);
                 
-                // 3. Delete leave permissions
                 db()->prepare("DELETE FROM leave_permissions WHERE student_id = ? OR approved_by = ?")->execute([$uid, $uid]);
                 
-                // 4. Delete attendance records & tokens
                 db()->prepare("DELETE FROM attendance_records WHERE student_id = ?")->execute([$uid]);
                 db()->prepare("DELETE FROM attendance_tokens WHERE generated_by = ?")->execute([$uid]);
                 
-                // 5. Delete announcements and materials
                 db()->prepare("DELETE FROM announcements WHERE author_id = ?")->execute([$uid]);
                 db()->prepare("DELETE FROM materials WHERE author_id = ?")->execute([$uid]);
                 
-                // Finally delete the user
                 db()->prepare("DELETE FROM users WHERE id = ?")->execute([$uid]);
                 
                 db()->commit();
                 setFlash('success', 'Akun & seluruh datanya berhasil dihapus.');
             } catch (PDOException $e) {
                 db()->rollBack();
-                // Fallback error message
                 setFlash('danger', 'Gagal menghapus akun: Akun ini memiliki data historis yang terkait erat dengan sistem.');
             }
         }
@@ -108,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Filter
 $filterRole  = $_GET['role'] ?? '';
 $filterClass = $_GET['class_id'] ?? '';
 $search      = $_GET['q'] ?? '';

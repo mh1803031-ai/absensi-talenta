@@ -15,7 +15,6 @@ if (!$journalId) {
     echo json_encode([]); exit;
 }
 
-// If student, only allow own journal
 if (currentRole() === 'siswa') {
     $check = db()->prepare("SELECT id FROM journals WHERE id = ? AND student_id = ?");
     $check->execute([$journalId, currentUser()['id']]);

@@ -1,6 +1,4 @@
 ﻿<?php
-// Shared head + topbar for all dashboard pages
-// Usage: include with $pageTitle and $activePage set
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
