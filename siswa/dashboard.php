@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 requireRole('siswa');
 
 $base       = '/TUGASPAKDANIL/ABSENSITALENTA';
@@ -99,7 +99,7 @@ $activePage = 'dashboard';
 </head>
 <body>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/header.php'; ?>
+<?php include __DIR__ . '/../includes/header.php'; ?>
 
 <style>
 .announcement-card { background: linear-gradient(135deg, rgba(69, 123, 157, 0.15), rgba(69, 123, 157, 0.05)); border: 1px solid rgba(69, 123, 157, 0.3); border-radius: var(--radius-lg); padding: 1.2rem 1.5rem; margin-bottom: 1rem; }
@@ -335,4 +335,4 @@ document.getElementById('tokenInput')?.addEventListener('keydown', function(e){
 });
 </script>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -1,7 +1,7 @@
 ﻿<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 requireRole('admin');
 
 $pageTitle  = 'Backup Database';
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'backu
     $dbuser = DB_USER;
     $dbpass = DB_PASS;
 
-    $backupDir = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/backups/';
+    $backupDir = __DIR__ . '/../backups/';
     if (!is_dir($backupDir)) mkdir($backupDir, 0755, true);
 
     $filename  = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'backu
 
 if (isset($_GET['download'])) {
     $reqFile = basename($_GET['download']);
-    $filePath = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/backups/' . $reqFile;
+    $filePath = __DIR__ . '/../backups/' . $reqFile;
     if (file_exists($filePath) && pathinfo($filePath, PATHINFO_EXTENSION) === 'sql') {
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . $reqFile . '"');
@@ -90,7 +90,7 @@ if (isset($_GET['download'])) {
 
 if (isset($_GET['delete_backup'])) {
     $reqFile = basename($_GET['delete_backup']);
-    $filePath = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/backups/' . $reqFile;
+    $filePath = __DIR__ . '/../backups/' . $reqFile;
     if (file_exists($filePath) && pathinfo($filePath, PATHINFO_EXTENSION) === 'sql') {
         unlink($filePath);
         setFlash('success', "File backup '$reqFile' berhasil dihapus.");
@@ -99,7 +99,7 @@ if (isset($_GET['delete_backup'])) {
 }
 
 // List existing backups
-$backupDir = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/backups/';
+$backupDir = __DIR__ . '/../backups/';
 $backupFiles = [];
 if (is_dir($backupDir)) {
     $files = glob($backupDir . '*.sql');
@@ -109,7 +109,7 @@ if (is_dir($backupDir)) {
     usort($backupFiles, fn($a, $b) => $b['time'] - $a['time']);
 }
 
-include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
@@ -198,4 +198,4 @@ include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/head
   </div>
 </div>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -1,7 +1,7 @@
 ﻿<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 requireRole('admin');
 
 $pageTitle = 'Kelola Jadwal Pelajaran';
@@ -57,7 +57,7 @@ $schedules = $stmt->fetchAll();
 
 $days = [1=>'Senin', 2=>'Selasa', 3=>'Rabu', 4=>'Kamis', 5=>'Jumat', 6=>'Sabtu', 7=>'Minggu'];
 
-include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="card">
@@ -254,4 +254,4 @@ function editData(data) {
 }
 </script>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

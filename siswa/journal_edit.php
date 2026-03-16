@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 requireRole('siswa');
 
 $base      = '/TUGASPAKDANIL/ABSENSITALENTA';
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowed = ['pdf','doc','docx','zip','txt','xls','xlsx','ppt','pptx'];
         if (in_array($ext, $allowed) && $_FILES['task_file']['size'] < 20*1024*1024) {
             $taskFilename = uniqid('task_') . '.' . $ext;
-            $uploadDir    = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/uploads/tasks/';
+            $uploadDir    = __DIR__ . '/../uploads/tasks/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
             move_uploaded_file($_FILES['task_file']['tmp_name'], $uploadDir . $taskFilename);
             $taskSubmitted = 1;
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mStmt->execute([(int)$mId, $journalId]);
             $mFile = $mStmt->fetchColumn();
             if ($mFile) {
-                $path = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/uploads/media/' . $mFile;
+                $path = __DIR__ . '/../uploads/media/' . $mFile;
                 if (file_exists($path)) @unlink($path);
                 db()->prepare("DELETE FROM journal_media WHERE id = ?")->execute([(int)$mId]);
             }
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // ── Add new Media files (foto & video) ────────────────────
-    $mediaDir = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/uploads/media/';
+    $mediaDir = __DIR__ . '/../uploads/media/';
     if (!is_dir($mediaDir)) mkdir($mediaDir, 0755, true);
 
     $allowedPhotos = ['jpg','jpeg','png','gif','webp','heic'];
@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle  = 'Revisi Jurnal';
 $activePage = 'journals';
-include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <style>
@@ -463,4 +463,4 @@ document.getElementById('journalForm').addEventListener('submit', function(e) {
 });
 </script>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

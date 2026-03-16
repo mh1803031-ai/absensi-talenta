@@ -1,7 +1,7 @@
 ﻿<?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 requireRole('siswa');
 
 $pageTitle  = 'Statistik Belajar';
@@ -41,7 +41,7 @@ $totalLeave = db()->query("
 // Average score
 $avgScore = count($quizData) > 0 ? array_sum($quizData) / count($quizData) : 0;
 
-include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem">
@@ -173,4 +173,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

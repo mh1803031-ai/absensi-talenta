@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/functions.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Allow both admin and guru
 if (!in_array(currentRole(), ['admin', 'guru'])) {
@@ -49,7 +49,7 @@ $announcements = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $pageTitle = 'Kelola Pengumuman';
 $activePage = 'announcements';
-include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/header.php';
+include __DIR__ . '/../includes/header.php';
 ?>
 
 <?php if ($error): ?>
@@ -120,4 +120,4 @@ include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/head
   </div>
 </div>
 
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

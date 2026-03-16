@@ -1,11 +1,11 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/includes/auth.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/config/database.php';
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../config/database.php';
 
 header('Content-Type: application/json');
 
-if (!isRole('siswa')) {
+if (currentRole() !== 'siswa') {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit;
 }
@@ -37,13 +37,13 @@ $mediaStmt = db()->prepare("SELECT file_name FROM journal_media WHERE journal_id
 $mediaStmt->execute([$journalId]);
 $medias = $mediaStmt->fetchAll();
 foreach ($medias as $m) {
-    $path = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/uploads/media/' . $m['file_name'];
+    $path = __DIR__ . '/../uploads/media/' . $m['file_name'];
     if (file_exists($path)) @unlink($path);
 }
 
 // Unlink task file
 if ($journal['task_file']) {
-    $taskPath = $_SERVER['DOCUMENT_ROOT'] . '/TUGASPAKDANIL/ABSENSITALENTA/uploads/tasks/' . $journal['task_file'];
+    $taskPath = __DIR__ . '/../uploads/tasks/' . $journal['task_file'];
     if (file_exists($taskPath)) @unlink($taskPath);
 }
 
